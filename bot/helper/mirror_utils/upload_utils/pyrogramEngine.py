@@ -60,9 +60,7 @@ class TgUploader:
             buttons.ubutton(BotTheme('MEDIAINFO_LINK'), await get_mediainfo_link(up_path))
         if config_dict['SAVE_MSG'] and config_dict['LEECH_LOG_ID'] or config_dict['SAVE_MSG'] and not self.__listener.isPrivate:
             buttons.ibutton(BotTheme('SAVE_MSG'), 'save', 'footer')
-        if self.__has_buttons:
-            return buttons.build_menu(1)
-        return None
+        return buttons.build_menu(1) if self.__has_buttons else None
 
     async def __copy_file(self):
         try:
@@ -196,10 +194,10 @@ class TgUploader:
 
     async def __switching_client(self, f_size):
         if f_size > 2097152000 and IS_PREMIUM_USER and self.__sent_msg._client.me.is_bot:
-            LOGGER.info(f'Trying to upload file greater than 2GB by user client')
+            LOGGER.info('Trying to upload file greater than 2GB by user client')
             self.__sent_msg = await user.get_messages(chat_id=self.__sent_msg.chat.id, message_ids=self.__sent_msg.id)
         if f_size < 2097152000 and not self.__sent_msg._client.me.is_bot:
-            LOGGER.info(f'Trying to upload file less than 2GB by bot client')
+            LOGGER.info('Trying to upload file less than 2GB by bot client')
             self.__sent_msg = await bot.get_messages(chat_id=self.__sent_msg.chat.id, message_ids=self.__sent_msg.id)
 
     async def __send_media_group(self, subkey, key, msgs):
@@ -339,8 +337,6 @@ class TgUploader:
                                                                        force_document=True,
                                                                        disable_notification=True,
                                                                        progress=self.__upload_progress)
-                if self.__sent_msg and self.__has_buttons:
-                    await self.__sent_msg.edit_reply_markup(await self.__buttons(self.__up_path))
             elif is_video:
                 key = 'videos'
                 duration = (await get_media_info(self.__up_path))[0]
@@ -376,8 +372,6 @@ class TgUploader:
                                                                     supports_streaming=True,
                                                                     disable_notification=True,
                                                                     progress=self.__upload_progress)
-                if self.__sent_msg and self.__has_buttons:
-                    await self.__sent_msg.edit_reply_markup(await self.__buttons(self.__up_path))
             elif is_audio:
                 key = 'audios'
                 duration, artist, title = await get_media_info(self.__up_path)
@@ -392,8 +386,6 @@ class TgUploader:
                                                                     thumb=thumb,
                                                                     disable_notification=True,
                                                                     progress=self.__upload_progress)
-                if self.__sent_msg and self.__has_buttons:
-                    await self.__sent_msg.edit_reply_markup(await self.__buttons(self.__up_path))
             else:
                 key = 'photos'
                 if self.__is_cancelled:
@@ -403,9 +395,8 @@ class TgUploader:
                                                                     caption=cap_mono,
                                                                     disable_notification=True,
                                                                     progress=self.__upload_progress)
-                if self.__sent_msg and self.__has_buttons:
-                    await self.__sent_msg.edit_reply_markup(await self.__buttons(self.__up_path))
-
+            if self.__sent_msg and self.__has_buttons:
+                await self.__sent_msg.edit_reply_markup(await self.__buttons(self.__up_path))
             if not self.__is_cancelled and self.__media_group and (self.__sent_msg.video or self.__sent_msg.document):
                 key = 'documents' if self.__sent_msg.document else 'videos'
                 if match := re_match(r'.+(?=\.0*\d+$)|.+(?=\.part\d+\..+)', self.__up_path):

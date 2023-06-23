@@ -17,5 +17,4 @@ def BotTheme(var_name, **format_vars):
     else:
         text = getattr(minimal.style(), var_name)
 
-    formatted_text = text.format_map(format_vars)
-    return formatted_text
+    return text.format_map(format_vars)

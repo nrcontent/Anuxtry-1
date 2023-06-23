@@ -132,11 +132,10 @@ async def login(_, message):
         input_pass = message.command[1]
         if user_data.get(user_id, {}).get('token', '') == config_dict['LOGIN_PASS']:
             return await sendMessage(message, '<b>Already Bot Login In!</b>')
-        if input_pass == config_dict['LOGIN_PASS']:
-            update_user_ldata(user_id, 'token', config_dict['LOGIN_PASS'])
-            return await sendMessage(message, '<b>Bot Permanent Login Successfully!</b>')
-        else:
+        if input_pass != config_dict['LOGIN_PASS']:
             return await sendMessage(message, '<b>Invalid Password!</b>\n\nKindly put the correct Password .')
+        update_user_ldata(user_id, 'token', config_dict['LOGIN_PASS'])
+        return await sendMessage(message, '<b>Bot Permanent Login Successfully!</b>')
     else:
         await sendMessage(message, '<b>Bot Login Usage :</b>\n\n<code>/cmd {password}</code>')
 
@@ -168,27 +167,28 @@ async def log(client, message):
 
 
 async def search_images():
-    if config_dict['IMG_SEARCH']:
-        try:
-            query_list = config_dict['IMG_SEARCH']
-            total_pages = config_dict['IMG_PAGE']
-            base_url = "https://www.wallpaperflare.com/search"
+    if not config_dict['IMG_SEARCH']:
+        return
+    try:
+        query_list = config_dict['IMG_SEARCH']
+        total_pages = config_dict['IMG_PAGE']
+        base_url = "https://www.wallpaperflare.com/search"
 
-            for query in query_list:
-                query = query.strip().replace(" ", "+")
-                for page in range(1, total_pages + 1):
-                    url = f"{base_url}?wallpaper={query}&width=1280&height=720&page={page}"
-                    r = rget(url)
-                    soup = BeautifulSoup(r.text, "html.parser")
-                    images = soup.select('img[data-src^="https://c4.wallpaperflare.com/wallpaper"]')
-                    for img in images:
-                        img_url = img['data-src']
-                        if img_url not in config_dict['IMAGES']:
-                            config_dict['IMAGES'].append(img_url)
-                if DATABASE_URL:
-                    await DbManger().update_config({'IMAGES': config_dict['IMAGES']})
-        except Exception as e:
-            LOGGER.error(f"An error occurred: {e}")
+        for query in query_list:
+            query = query.strip().replace(" ", "+")
+            for page in range(1, total_pages + 1):
+                url = f"{base_url}?wallpaper={query}&width=1280&height=720&page={page}"
+                r = rget(url)
+                soup = BeautifulSoup(r.text, "html.parser")
+                images = soup.select('img[data-src^="https://c4.wallpaperflare.com/wallpaper"]')
+                for img in images:
+                    img_url = img['data-src']
+                    if img_url not in config_dict['IMAGES']:
+                        config_dict['IMAGES'].append(img_url)
+            if DATABASE_URL:
+                await DbManger().update_config({'IMAGES': config_dict['IMAGES']})
+    except Exception as e:
+        LOGGER.error(f"An error occurred: {e}")
 
 
 help_string = f'''

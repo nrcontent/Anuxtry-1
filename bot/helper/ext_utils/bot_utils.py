@@ -132,10 +132,10 @@ async def get_telegraph_list(telegraph_content):
 
 def handleIndex(index, dic):
     while True:
-        if abs(index) >= len(dic):
-            if index < 0: index = len(dic) - abs(index)
-            elif index > 0: index = index - len(dic)
-        else: break
+        if abs(index) < len(dic):
+            break
+        if index < 0: index = len(dic) - abs(index)
+        elif index > 0: index = index - len(dic)
     return index
 
 def get_progress_bar_string(pct):
@@ -253,7 +253,10 @@ def get_readable_message():
         speed_in_bytes_per_second = convert_speed_to_bytes_per_second(spd)
         if tstatus == MirrorStatus.STATUS_DOWNLOADING:
             dl_speed += speed_in_bytes_per_second
-        elif tstatus == MirrorStatus.STATUS_UPLOADING or tstatus == MirrorStatus.STATUS_SEEDING:
+        elif tstatus in [
+            MirrorStatus.STATUS_UPLOADING,
+            MirrorStatus.STATUS_SEEDING,
+        ]:
             up_speed += speed_in_bytes_per_second
 
     if tasks > STATUS_LIMIT:
@@ -381,10 +384,7 @@ def update_user_ldata(id_, key=None, value=None):
     exception_keys = ['is_sudo', 'is_auth', 'dly_tasks']
     if not key and not value:
         if id_ in user_data:
-            updated_data = {}
-            for k, v in user_data[id_].items():
-                if k in exception_keys:
-                    updated_data[k] = v
+            updated_data = {k: v for k, v in user_data[id_].items() if k in exception_keys}
             user_data[id_] = updated_data
         return
     user_data.setdefault(id_, {})
@@ -450,7 +450,7 @@ async def getdailytasks(user_id, increase_task=False, upleech=0, upmirror=0, che
     task, lsize, msize = 0, 0, 0
     if user_id in user_data and user_data[user_id].get('dly_tasks'):
         userdate, task, lsize, msize = user_data[user_id]['dly_tasks']
-        nowdate = datetime.today()
+        nowdate = datetime.now()
         if userdate.year <= nowdate.year and userdate.month <= nowdate.month and userdate.day < nowdate.day:
             task, lsize, msize = 0, 0, 0
             if increase_task:
@@ -459,22 +459,19 @@ async def getdailytasks(user_id, increase_task=False, upleech=0, upmirror=0, che
                 lsize += upleech
             elif upmirror != 0:
                 msize += upmirror
-        else:
-            if increase_task:
-                task += 1
-            elif upleech != 0:
-                lsize += upleech
-            elif upmirror != 0:
-                msize += upmirror
-    else:
-        if increase_task:
+        elif increase_task:
             task += 1
         elif upleech != 0:
             lsize += upleech
         elif upmirror != 0:
             msize += upmirror
-    update_user_ldata(user_id, 'dly_tasks', [
-                      datetime.today(), task, lsize, msize])
+    elif increase_task:
+        task += 1
+    elif upleech != 0:
+        lsize += upleech
+    elif upmirror != 0:
+        msize += upmirror
+    update_user_ldata(user_id, 'dly_tasks', [datetime.now(), task, lsize, msize])
     if DATABASE_URL:
         await DbManger().update_user_data(user_id)
     if check_leech:
@@ -515,25 +512,65 @@ def extra_btns(buttons):
 
 async def set_commands(client):
     if config_dict['SET_COMMANDS']:
-        await client.set_bot_commands([
-        BotCommand(f'{BotCommands.MirrorCommand[0]}', f'or /{BotCommands.MirrorCommand[1]} Mirror'),
-        BotCommand(f'{BotCommands.LeechCommand[0]}', f'or /{BotCommands.LeechCommand[1]} Leech'),
-        BotCommand(f'{BotCommands.QbMirrorCommand[0]}', f'or /{BotCommands.QbMirrorCommand[1]} Mirror torrent using qBittorrent'),
-        BotCommand(f'{BotCommands.QbLeechCommand[0]}', f'or /{BotCommands.QbLeechCommand[1]} Leech torrent using qBittorrent'),
-        BotCommand(f'{BotCommands.YtdlCommand[0]}', f'or /{BotCommands.YtdlCommand[1]} Mirror yt-dlp supported link'),
-        BotCommand(f'{BotCommands.YtdlLeechCommand[0]}', f'or /{BotCommands.YtdlLeechCommand[1]} Leech through yt-dlp supported link'),
-        BotCommand(f'{BotCommands.CloneCommand}', 'Copy file/folder to Drive'),
-        BotCommand(f'{BotCommands.CountCommand}', '[drive_url]: Count file/folder of Google Drive.'),
-        BotCommand(f'{BotCommands.StatusCommand[0]}', f'or /{BotCommands.StatusCommand[1]} Get mirror status message'),
-        BotCommand(f'{BotCommands.StatsCommand}', f'Check Bot & System stats'),
-        BotCommand(f'{BotCommands.BtSelectCommand}', 'Select files to download only torrents'),
-        BotCommand(f'{BotCommands.CancelMirror}', f'Cancel a Task'),
-        BotCommand(f'{BotCommands.CancelAllCommand}', f'Cancel all tasks which added by you to in bots.'),
-        BotCommand(f'{BotCommands.ListCommand}', 'Search in Drive'),
-        BotCommand(f'{BotCommands.SearchCommand}', 'Search in Torrent'),
-        BotCommand(f'{BotCommands.UserSetCommand[0]}', 'Users settings'),
-        BotCommand(f'{BotCommands.HelpCommand}', 'Get detailed help'),
-            ])
+        await client.set_bot_commands(
+            [
+                BotCommand(
+                    f'{BotCommands.MirrorCommand[0]}',
+                    f'or /{BotCommands.MirrorCommand[1]} Mirror',
+                ),
+                BotCommand(
+                    f'{BotCommands.LeechCommand[0]}',
+                    f'or /{BotCommands.LeechCommand[1]} Leech',
+                ),
+                BotCommand(
+                    f'{BotCommands.QbMirrorCommand[0]}',
+                    f'or /{BotCommands.QbMirrorCommand[1]} Mirror torrent using qBittorrent',
+                ),
+                BotCommand(
+                    f'{BotCommands.QbLeechCommand[0]}',
+                    f'or /{BotCommands.QbLeechCommand[1]} Leech torrent using qBittorrent',
+                ),
+                BotCommand(
+                    f'{BotCommands.YtdlCommand[0]}',
+                    f'or /{BotCommands.YtdlCommand[1]} Mirror yt-dlp supported link',
+                ),
+                BotCommand(
+                    f'{BotCommands.YtdlLeechCommand[0]}',
+                    f'or /{BotCommands.YtdlLeechCommand[1]} Leech through yt-dlp supported link',
+                ),
+                BotCommand(
+                    f'{BotCommands.CloneCommand}', 'Copy file/folder to Drive'
+                ),
+                BotCommand(
+                    f'{BotCommands.CountCommand}',
+                    '[drive_url]: Count file/folder of Google Drive.',
+                ),
+                BotCommand(
+                    f'{BotCommands.StatusCommand[0]}',
+                    f'or /{BotCommands.StatusCommand[1]} Get mirror status message',
+                ),
+                BotCommand(
+                    f'{BotCommands.StatsCommand}', 'Check Bot & System stats'
+                ),
+                BotCommand(
+                    f'{BotCommands.BtSelectCommand}',
+                    'Select files to download only torrents',
+                ),
+                BotCommand(f'{BotCommands.CancelMirror}', 'Cancel a Task'),
+                BotCommand(
+                    f'{BotCommands.CancelAllCommand}',
+                    'Cancel all tasks which added by you to in bots.',
+                ),
+                BotCommand(f'{BotCommands.ListCommand}', 'Search in Drive'),
+                BotCommand(
+                    f'{BotCommands.SearchCommand}', 'Search in Torrent'
+                ),
+                BotCommand(
+                    f'{BotCommands.UserSetCommand[0]}', 'Users settings'
+                ),
+                BotCommand(f'{BotCommands.HelpCommand}', 'Get detailed help'),
+            ]
+        )
 
 
 def is_valid_token(url, token):
