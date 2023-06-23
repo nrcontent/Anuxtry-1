@@ -13,10 +13,10 @@ class style:
     # ---------------------
 
     # async def stats(client, message):
-    STATS = '''⌬ <b><i>BOT VERSION :</i></b>
-┠ <b>Bot Updated :</b> {last_commit}
-┠ <b>Bot Version :</b> {bot_version}
-┖ <b>Last ChangeLog :</b> {commit_details}
+    STATS = '''⌬ <b>BOT VERSION :</b>
+ <b>Bot Updated :</b> {last_commit}
+ <b>Bot Version :</b> {bot_version}
+ <b>Last ChangeLog :</b> {commit_details}
 
 ⌬ <b><i>BOT SYSTEM :</i></b>
 ┠ <b>Bot Uptime :</b> {bot_uptime}
