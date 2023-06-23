@@ -90,7 +90,7 @@ class style:
     # ----- BUTTONS -------
     CLOUD_LINK =      'Cloud Link'
     SAVE_MSG =        'Save Message'
-    RCLONE_LINK =     'Clone Link'
+    RCLONE_LINK =     'Rclone Link'
     DDL_LINK =        '{Serv} Link'
     INDEX_LINK =      'Index Link'
     VIEW_LINK =       'View Link'
