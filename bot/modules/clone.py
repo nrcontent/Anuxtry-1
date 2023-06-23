@@ -34,9 +34,9 @@ async def rcloneNode(client, message, link, dst_path, rcf, tag):
 
     if link.startswith('mrcc:'):
         link = link.split('mrcc:', 1)[1]
-        config_path = f'rclone/{message.from_user.id}.conf'
+        config_path = f'tanha/{message.from_user.id}.conf'
     else:
-        config_path = 'rclone.conf'
+        config_path = 'rcl.conf'
 
     if not await aiopath.exists(config_path):
         await sendMessage(message, f"Rclone Config: {config_path} not Exists!")
@@ -53,17 +53,17 @@ async def rcloneNode(client, message, link, dst_path, rcf, tag):
         await sendMessage(message, 'Wrong Rclone Clone Destination!')
         return
     if dst_path.startswith('mrcc:'):
-        if config_path != f'rclone/{message.from_user.id}.conf':
-            await sendMessage(message, 'You should use same rclone.conf to clone between pathies!')
+        if config_path != f'tanha/{message.from_user.id}.conf':
+            await sendMessage(message, 'You should use same rcl.conf to clone between pathies!')
             return
-    elif config_path != 'rclone.conf':
-        await sendMessage(message, 'You should use same rclone.conf to clone between pathies!')
+    elif config_path != 'rcl.conf':
+        await sendMessage(message, 'You should use same rcl.conf to clone between pathies!')
         return
 
     remote, src_path = link.split(':', 1)
     src_path = src_path .strip('/')
 
-    cmd = ['rclone', 'lsjson', '--fast-list', '--stat',
+    cmd = ['zcl', 'lsjson', '--fast-list', '--stat',
            '--no-modtime', '--config', config_path, f'{remote}:{src_path}']
     res = await cmd_exec(cmd)
     if res[2] != 0:
@@ -95,11 +95,11 @@ async def rcloneNode(client, message, link, dst_path, rcf, tag):
     if not link:
         return
     LOGGER.info(f'Cloning Done: {name}')
-    cmd1 = ['rclone', 'lsf', '--fast-list', '-R',
+    cmd1 = ['zcl', 'lsf', '--fast-list', '-R',
             '--files-only', '--config', config_path, destination]
-    cmd2 = ['rclone', 'lsf', '--fast-list', '-R',
+    cmd2 = ['zcl', 'lsf', '--fast-list', '-R',
             '--dirs-only', '--config', config_path, destination]
-    cmd3 = ['rclone', 'size', '--fast-list', '--json',
+    cmd3 = ['zcl', 'size', '--fast-list', '--json',
             '--config', config_path, destination]
     res1, res2, res3 = await gather(cmd_exec(cmd1), cmd_exec(cmd2), cmd_exec(cmd3))
     if res1[2] != res2[2] != res3[2] != 0:
@@ -227,7 +227,7 @@ async def clone(client, message):
         return
 
     if is_rclone_path(link):
-        if not await aiopath.exists('rclone.conf') and not await aiopath.exists(f'rclone/{message.from_user.id}.conf'):
+        if not await aiopath.exists('rcl.conf') and not await aiopath.exists(f'tanha/{message.from_user.id}.conf'):
             await sendMessage(message, 'Rclone Config Not exists!')
             return
         if not config_dict['RCLONE_PATH'] and not dst_path:

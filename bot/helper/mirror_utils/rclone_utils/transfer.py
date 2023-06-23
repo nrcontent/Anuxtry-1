@@ -88,7 +88,7 @@ class RcloneTransferHelper:
         elif gd_id := remote_opts.get('root_folder_id'):
             option = 'root_folder_id'
         else:
-            return 'rclone.conf'
+            return 'rcl.conf'
 
         files = await listdir('accounts')
         text = ''.join(f"[sa{i:03}]\ntype = drive\nscope = drive\nservice_account_file = accounts/{sa}\n{option} = {gd_id}\n\n"
@@ -135,10 +135,10 @@ class RcloneTransferHelper:
             return
         remote_type = remote_opts['type']
 
-        if remote_type == 'drive' and config_dict['USE_SERVICE_ACCOUNTS'] and config_path == 'rclone.conf' \
+        if remote_type == 'drive' and config_dict['USE_SERVICE_ACCOUNTS'] and config_path == 'rcl.conf' \
                 and await aiopath.isdir('accounts'):
             config_path = await self.__create_rc_sa(remote, remote_opts)
-            if config_path != 'rclone.conf':
+            if config_path != 'rcl.conf':
                 sa_files = await listdir('accounts')
                 self.__sa_number = len(sa_files)
                 self.__sa_index = randrange(self.__sa_number)
@@ -169,7 +169,7 @@ class RcloneTransferHelper:
             epath = f"{remote}:{rc_path}{self.name}"
             destination = epath
 
-        cmd = ['rclone', 'lsjson', '--fast-list', '--no-mimetype',
+        cmd = ['zcl', 'lsjson', '--fast-list', '--no-mimetype',
                '--no-modtime', '--config', config_path, epath]
         res, err, code = await cmd_exec(cmd)
 
@@ -216,9 +216,9 @@ class RcloneTransferHelper:
         rc_path = self.__listener.upPath.strip('/')
         if rc_path.startswith('mrcc:'):
             rc_path = rc_path.split('mrcc:', 1)[1]
-            oconfig_path = f'rclone/{self.__listener.message.from_user.id}.conf'
+            oconfig_path = f'tanha/{self.__listener.message.from_user.id}.conf'
         else:
-            oconfig_path = 'rclone.conf'
+            oconfig_path = 'rcl.conf'
 
         oremote, rc_path = rc_path.split(':', 1)
 
@@ -243,10 +243,10 @@ class RcloneTransferHelper:
 
         fremote = oremote
         fconfig_path = oconfig_path
-        if remote_type == 'drive' and config_dict['USE_SERVICE_ACCOUNTS'] and fconfig_path == 'rclone.conf' \
+        if remote_type == 'drive' and config_dict['USE_SERVICE_ACCOUNTS'] and fconfig_path == 'rcl.conf' \
                 and await aiopath.isdir('accounts'):
             fconfig_path = await self.__create_rc_sa(oremote, remote_opts)
-            if fconfig_path != 'rclone.conf':
+            if fconfig_path != 'rcl.conf':
                 sa_files = await listdir('accounts')
                 self.__sa_number = len(sa_files)
                 self.__sa_index = randrange(self.__sa_number)
@@ -277,7 +277,7 @@ class RcloneTransferHelper:
             else:
                 destination = f"{oremote}:{self.name}"
 
-            cmd = ['rclone', 'link', '--config', oconfig_path, destination]
+            cmd = ['zcl', 'link', '--config', oconfig_path, destination]
             res, err, code = await cmd_exec(cmd)
 
             if code == 0:
@@ -335,7 +335,7 @@ class RcloneTransferHelper:
                 if mime_type != 'Folder':
                     destination += f'/{self.name}' if dst_path else self.name
 
-                cmd = ['rclone', 'link', '--config', config_path, destination]
+                cmd = ['zcl', 'link', '--config', config_path, destination]
                 res, err, code = await cmd_exec(cmd)
 
                 if self.__is_cancelled:
@@ -352,7 +352,7 @@ class RcloneTransferHelper:
     @staticmethod
     def __getUpdatedCommand(config_path, source, destination, rcflags, method):
         ext = '*.{' + ','.join(GLOBAL_EXTENSION_FILTER) + '}'
-        cmd = ['rclone', method, '--fast-list', '--config', config_path, '-P', source, destination,
+        cmd = ['zcl', method, '--fast-list', '--config', config_path, '-P', source, destination,
                '--exclude', ext, '--ignore-case', '--low-level-retries', '1', '-M', '--log-file',
                'rlog.txt', '--log-level', 'DEBUG']
         if rcflags:

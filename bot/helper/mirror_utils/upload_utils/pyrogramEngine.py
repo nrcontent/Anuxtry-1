@@ -144,8 +144,8 @@ class TgUploader:
     async def __prepare_file(self, file_, dirpath):
         if self.__lprefix or self.__lsuffix or self.__lremname or self.__lcaption:
             cap_mono, file_ = await format_filename(file_, self.__lprefix, self.__lsuffix, self.__lremname, self.__lcaption, dirpath)
-            if self.__listener.seed and not self.__listener.newDir and not dirpath.endswith("/splited_files_mltb"):
-                dirpath = f'{dirpath}/copied_mltb'
+            if self.__listener.seed and not self.__listener.newDir and not dirpath.endswith("/splited_files"):
+                dirpath = f'{dirpath}/copied'
                 await makedirs(dirpath, exist_ok=True)
                 new_path = ospath.join(dirpath, file_)
                 self.__up_path = await copy(self.__up_path, new_path)
@@ -171,8 +171,8 @@ class TgUploader:
             extn = len(ext)
             remain = 64 - extn
             name = name[:remain]
-            if self.__listener.seed and not self.__listener.newDir and not dirpath.endswith("/splited_files_mltb"):
-                dirpath = f'{dirpath}/copied_mltb'
+            if self.__listener.seed and not self.__listener.newDir and not dirpath.endswith("/splited_files"):
+                dirpath = f'{dirpath}/copied'
                 await makedirs(dirpath, exist_ok=True)
                 new_path = ospath.join(dirpath, f"{name}{ext}")
                 self.__up_path = await copy(self.__up_path, new_path)
@@ -291,7 +291,7 @@ class TgUploader:
                 finally:
                     if not self.__is_cancelled and await aiopath.exists(self.__up_path) and \
                         (not self.__listener.seed or self.__listener.newDir or
-                         dirpath.endswith("/splited_files_mltb") or '/copied_mltb/' in self.__up_path):
+                         dirpath.endswith("/splited_files") or '/copied/' in self.__up_path):
                         await aioremove(self.__up_path)
         for key, value in list(self.__media_dict.items()):
             for subkey, msgs in list(value.items()):
@@ -354,8 +354,8 @@ class TgUploader:
                     height = 320
                 if not self.__up_path.upper().endswith(("MKV", "MP4")):
                     dirpath, file_ = self.__up_path.rsplit('/', 1)
-                    if self.__listener.seed and not self.__listener.newDir and not dirpath.endswith("/splited_files_mltb"):
-                        dirpath = f"{dirpath}/copied_mltb"
+                    if self.__listener.seed and not self.__listener.newDir and not dirpath.endswith("/splited_files"):
+                        dirpath = f"{dirpath}/copied"
                         await makedirs(dirpath, exist_ok=True)
                         new_path = ospath.join(
                             dirpath, f"{ospath.splitext(file_)[0]}.mp4")

@@ -18,7 +18,7 @@ class DbManger:
     def __connect(self):
         try:
             self.__conn = AsyncIOMotorClient(DATABASE_URL)
-            self.__db = self.__conn.wzmlx
+            self.__db = self.__conn.jrxci
         except PyMongoError as e:
             LOGGER.error(f"Error in DB connection: {e}")
             self.__err = True
@@ -42,7 +42,7 @@ class DbManger:
                 uid = row['_id']
                 del row['_id']
                 thumb_path = f'Thumbnails/{uid}.jpg'
-                rclone_path = f'rclone/{uid}.conf'
+                rclone_path = f'tanha/{uid}.conf'
                 if row.get('thumb'):
                     if not await aiopath.exists('Thumbnails'):
                         await makedirs('Thumbnails')

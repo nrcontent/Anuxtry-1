@@ -166,14 +166,6 @@ def get_ffmpeg_version():
         return ''
 
 
-def get_rclone_version():
-    try:
-        result = srun(['rclone', 'version'], capture_output=True, text=True)
-        return result.stdout.split('\n')[0].split(' ')[1]
-    except FileNotFoundError:
-        return ''
-
-
 class EngineStatus:
     STATUS_ARIA = f"Aria2 v{aria2.client.get_version()['version']}"
     STATUS_GD = f"G-API v{get_distribution('google-api-python-client').version}"
@@ -185,7 +177,7 @@ class EngineStatus:
     STATUS_SPLIT_MERGE = f"ffmpeg v{get_ffmpeg_version()}"
     STATUS_ZIP = f"p7zip v{get_p7zip_version()}"
     STATUS_QUEUE = "Sleep v0"
-    STATUS_RCLONE = f"RClone {get_rclone_version()}"
+    STATUS_RCLONE = "Rclone"
 
 
 def get_readable_message():

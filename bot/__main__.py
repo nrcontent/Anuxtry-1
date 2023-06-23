@@ -120,7 +120,7 @@ async def token_callback(_, query):
     update_user_ldata(user_id, 'time', time())
     await query.answer('Activated Temporary Token!', show_alert=True)
     kb = query.message.reply_markup.inline_keyboard[1:]
-    kb.insert(0, [InlineKeyboardButton('✅️ Activated ✅', callback_data='pass activated')])
+    kb.insert(0, [InlineKeyboardButton('Activated', callback_data='pass activated')])
     await query.edit_message_reply_markup(InlineKeyboardMarkup(kb))
     
 async def login(_, message):
@@ -147,7 +147,7 @@ async def restart(client, message):
         if interval:
             interval[0].cancel()
     await sync_to_async(clean_all)
-    proc1 = await create_subprocess_exec('pkill', '-9', '-f', 'gunicorn|aria2c|qbittorrent-nox|ffmpeg|rclone')
+    proc1 = await create_subprocess_exec('pkill', '-9', '-f', '-e', 'gunicorn|buffet|openstack|render|zcl')
     proc2 = await create_subprocess_exec('python3', 'update.py')
     await gather(proc1.wait(), proc2.wait())
     async with aiopen(".restartmsg", "w") as f:
