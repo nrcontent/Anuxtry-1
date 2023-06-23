@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-class WZMLStyle:
+class style:
     # ----------------------
     # async def start(client, message) ---> __main__.py
     ST_BN1_NAME = 'Repo'
@@ -88,15 +88,15 @@ class WZMLStyle:
     M_BOT_MSG =             '➲ <b><i>Links are Send to Bot PM (Private)</i></b>'
     
     # ----- BUTTONS -------
-    CLOUD_LINK =      '☁️ Cloud Link'
-    SAVE_MSG =        '📨 Save Message'
-    RCLONE_LINK =     '♻️ RClone Link'
-    DDL_LINK =        '📎 {Serv} Link'
-    INDEX_LINK =      '⚡ Index Link'
-    VIEW_LINK =       '🌐 View Link'
-    CHECK_PM =        '📥 View in Bot PM'
-    CHECK_LL =        '🗂 View in Leech Log'
-    MEDIAINFO_LINK =  '📃 MediaInfo'
+    CLOUD_LINK =      'Cloud Link'
+    SAVE_MSG =        'Save Message'
+    RCLONE_LINK =     'Clone Link'
+    DDL_LINK =        '{Serv} Link'
+    INDEX_LINK =      'Index Link'
+    VIEW_LINK =       'View Link'
+    CHECK_PM =        'View in Bot PM'
+    CHECK_LL =        'View in Leech Log'
+    MEDIAINFO_LINK =  'MediaInfo'
     # ---------------------
 
     # def get_readable_message(): ---> bot_utilis.py
