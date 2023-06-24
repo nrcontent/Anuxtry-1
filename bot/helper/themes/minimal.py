@@ -13,36 +13,30 @@ class style:
     # ---------------------
 
     # async def stats(client, message):
-    STATS = '''⌬ <b>BOT VERSION :</b>
- <b>Bot Updated :</b> {last_commit}
- <b>Bot Version :</b> {bot_version}
- <b>Last ChangeLog :</b> {commit_details}
+    STATS = '''<b>BOT VERSION :</b>
+<b>Bot Updated :</b> {last_commit}
+<b>Bot Version :</b> {bot_version}
+<b>Last ChangeLog :</b> {commit_details}
 
-⌬ <b><i>BOT SYSTEM :</i></b>
-┠ <b>Bot Uptime :</b> {bot_uptime}
-┠ <b>OS Uptime :</b> {os_uptime}
-┖ <b>OS Arch :</b> {os_arch}
+<b><i>BOT SYSTEM :</i></b>
+<b>Bot Uptime :</b> {bot_uptime}
+<b>OS Uptime :</b> {os_uptime}
+<b>OS Arch :</b> {os_arch}
 
-⌬ <b><i>BOT ANALYSIS :</i></b>
-┎ <b>CPU :</b>
-┃ {cpu_bar} {cpu}%
-┠ <b>CPU Frequency :</b> {cpu_freq}
-┖ <b>P-Core(s) :</b> {p_core} | <b>V-Core(s) :</b> {v_core} ( <b>T :</b> {total_core} )
+<b><i>BOT ANALYSIS :</i></b>
+<b>CPU :</b> {cpu}%
+<b>CPU Frequency :</b> {cpu_freq}
+<b>P-Core(s) :</b> {p_core} | <b>V-Core(s) :</b> {v_core} ( <b>T :</b> {total_core} )
 
-┎ <b><i>RAM ( MEMORY ) :</i></b>
-┃ {ram_bar} {ram}%
-┖ <b>U :</b> {ram_u} | <b>F :</b> {ram_f} | <b>T :</b> {ram_t}
+<b><i>RAM ( MEMORY ) :</i></b> {ram_bar} {ram}%
+<b>U :</b> {ram_u} | <b>F :</b> {ram_f} | <b>T :</b> {ram_t}
 
-┎ <b><i>SWAP MEMORY :</i></b>
-┃ {swap_bar} {swap}%
-┖ <b>U :</b> {swap_u} | <b>F :</b> {swap_f} | <b>T :</b> {swap_t}
+<b><i>SWAP MEMORY :</i></b> {swap}%
+<b>U :</b> {swap_u} | <b>F :</b> {swap_f} | <b>T :</b> {swap_t}
 
-┎ <b><i>Disk Storage :</i></b>
-┃ {disk_bar} {disk}%
-┖ <b>U :</b> {disk_u} | <b>F :</b> {disk_f} | <b>T :</b> {disk_t}
-
-⌬ <b><i>BOT DATA :</i></b>
-┖ <b>UP Data:</b> {up_data} | <b>DL Data:</b> {dl_data}'''
+<b><i>Disk Storage :</i></b> {disk}%
+<b>U :</b> {disk_u} | <b>F :</b> {disk_f} | <b>T :</b> {disk_t}
+'''
     # ---------------------
 
     # async def restart(client, message): ---> __main__.py
@@ -143,9 +137,9 @@ class style:
     UL =                        '<b>UL:</b> {UL}/s'
 
     ###--------BUTTONS-------
-    PREVIOUS = '⫷'
-    REFRESH = '♺ Refresh'
-    NEXT = '⫸'
+    PREVIOUS = 'Prev'
+    REFRESH = 'Refresh'
+    NEXT = 'Next'
     # ---------------------
 
     #STOP_DUPLICATE_MSG: ---> clone.py, aria2_listener.py, task_manager.py
@@ -178,14 +172,14 @@ class style:
     # ---------------------
 
     # USER Setting --> user_setting.py 
-    USER_SETTING = '''㊂ <b><u>User Settings :</u></b>
+    USER_SETTING = '''<b><u>User Settings :</u></b>
         
 ┎<b> Name :</b> {NAME} ( <code>{ID}</code> )
 ┠<b> Username :</b> {USERNAME}
 ┠<b> Telegram DC :</b> {DC}
 ┖<b> Language :</b> {LANG}'''
 
-    UNIVERSAL = '''㊂ <b><u>Universal Settings : {NAME}</u></b>
+    UNIVERSAL = '''<b><u>Universal Settings : {NAME}</u></b>
 
 ┎<b> YT-DLP Options :</b> <b><code>{YT}</code></b>
 ┠<b> Daily Tasks :</b> <code>{DT}</code> per day
@@ -193,13 +187,13 @@ class style:
 ┠<b> MediaInfo Mode :</b> <code>{MEDIAINFO}</code>
 ┖<b> User Bot PM :</b> <code>{BOT_PM}</code>'''
 
-    MIRROR = '''㊂ <b><u>Mirror Settings : {NAME}</u></b>
+    MIRROR = '''<b><u>Mirror Settings : {NAME}</u></b>
 
 ┎<b> RClone Config :</b> <i>{RCLONE}</i>
 ┠<b> DDL Server(s) :</b> <i>{DDL_SERVER}</i>
 ┖<b> Daily Mirror :</b> <code>{DM}</code> per day'''
 
-    LEECH = '''㊂ <b><u>Leech Settings for {NAME}</u></b>
+    LEECH = '''<b><u>Leech Settings for {NAME}</u></b>
 
 ┎<b> Daily Leech : </b><code>{DL}</code> per day
 ┠<b> Leech Type :</b> <i>{LTYPE}</i>
