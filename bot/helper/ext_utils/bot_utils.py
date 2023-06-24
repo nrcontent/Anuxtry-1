@@ -45,17 +45,17 @@ PAGE_NO = 1
 
 
 class MirrorStatus:
-    STATUS_UPLOADING = "Upload"
-    STATUS_DOWNLOADING = "Download"
-    STATUS_CLONING = "Clone"
-    STATUS_QUEUEDL = "QueueDL"
-    STATUS_QUEUEUP = "QueueUp"
-    STATUS_PAUSED = "Pause"
-    STATUS_ARCHIVING = "Archive"
-    STATUS_EXTRACTING = "Extract"
-    STATUS_SPLITTING = "Split"
+    STATUS_UPLOADING = "Uploading"
+    STATUS_DOWNLOADING = "Downloading"
+    STATUS_CLONING = "Cloning"
+    STATUS_QUEUEDL = "DL queued"
+    STATUS_QUEUEUP = "UL queued"
+    STATUS_PAUSED = "Paused"
+    STATUS_ARCHIVING = "Archiving"
+    STATUS_EXTRACTING = "Extracting"
+    STATUS_SPLITTING = "Splitting"
     STATUS_CHECKING = "CheckUp"
-    STATUS_SEEDING = "Seed"
+    STATUS_SEEDING = "Seeding"
     STATUS_UPLOADDDL = "Upload DDL"
 
 
@@ -126,7 +126,7 @@ async def get_telegraph_list(telegraph_content):
     if len(path) > 1:
         await telegraph.edit_telegraph(path, telegraph_content)
     buttons = ButtonMaker()
-    buttons.ubutton("🔎 VIEW", f"https://telegra.ph/{path[0]}")
+    buttons.ubutton("VIEW", f"https://telegra.ph/{path[0]}")
     buttons = extra_btns(buttons)
     return buttons.build_menu(1)
 
@@ -138,143 +138,102 @@ def handleIndex(index, dic):
         elif index > 0: index = index - len(dic)
     return index
 
-def get_progress_bar_string(pct):
-    pct = float(str(pct).strip('%'))
+def progress_bar(pct):
+    pct = float(pct.strip('%'))
     p = min(max(pct, 0), 100)
-    cFull = int(p // 8)
-    cPart = int(p % 8 - 1)
-    p_str = '■' * cFull
-    if cPart >= 0:
-        p_str += ['▤', '▥', '▦', '▧', '▨', '▩', '■'][cPart]
-    p_str += '□' * (12 - cFull)
-    return f"[{p_str}]"
-
-
-def get_p7zip_version():
-    try:
-        result = srun(['7z', '-version'], capture_output=True, text=True)
-        return result.stdout.split('\n')[2].split(' ')[2]
-    except FileNotFoundError:
-        return ''
-
-
-def get_ffmpeg_version():
-    try:
-        result = srun(['ffmpeg', '-version'], capture_output=True, text=True)
-        return result.stdout.split('\n')[0].split(' ')[2].split('ubuntu')[0]
-    except FileNotFoundError:
-        return ''
-
+    cFull = int(p / 10)
+    cIncomplete = int(round((p / 10 - cFull) * 4))
+    p_str = '●' * cFull
+    if cIncomplete > 0:
+        s = '◔◑◕●'
+        incomplete_char = s[cIncomplete - 1]
+        p_str += incomplete_char
+    p_str += '○' * (10 - len(p_str))
+    return p_str
 
 class EngineStatus:
-    STATUS_ARIA = f"Aria2 v{aria2.client.get_version()['version']}"
-    STATUS_GD = f"G-API v{get_distribution('google-api-python-client').version}"
-    STATUS_MEGA = f"MegaSDK v{MegaApi('test').getVersion()}"
-    STATUS_QB = f"qBit {get_client().app.version}"
-    STATUS_TG = f"Pyro v{get_distribution('pyrogram').version}"
-    STATUS_YT = f"yt-dlp v{get_distribution('yt-dlp').version}"
+    STATUS_ARIA = "Aria2"
+    STATUS_GD = "G-API"
+    STATUS_MEGA = "MegaSDK"
+    STATUS_QB = "qBit"
+    STATUS_TG = "Pyro"
+    STATUS_YT = "yt-dlp"
     STATUS_EXT = "pExtract"
-    STATUS_SPLIT_MERGE = f"ffmpeg v{get_ffmpeg_version()}"
-    STATUS_ZIP = f"p7zip v{get_p7zip_version()}"
+    STATUS_SPLIT_MERGE = "ffmpeg"
+    STATUS_ZIP = "p7zip"
     STATUS_QUEUE = "Sleep v0"
     STATUS_RCLONE = "Rclone"
 
 
 def get_readable_message():
-    msg = ""
+    msg = ''
     button = None
     STATUS_LIMIT = config_dict['STATUS_LIMIT']
     tasks = len(download_dict)
+    currentTime = get_readable_time(time() - botStartTime)
     globals()['PAGES'] = (tasks + STATUS_LIMIT - 1) // STATUS_LIMIT
     if PAGE_NO > PAGES and PAGES != 0:
         globals()['STATUS_START'] = STATUS_LIMIT * (PAGES - 1)
         globals()['PAGE_NO'] = PAGES
     for download in list(download_dict.values())[STATUS_START:STATUS_LIMIT+STATUS_START]:
-        msg_link = download.message.link if download.message.chat.type in [
-            ChatType.SUPERGROUP, ChatType.CHANNEL] else ''
-        msg += BotTheme('STATUS_NAME', Name=escape(f'{download.name()}'))
+        msg += f"{escape(f'{download.name()}')}\n"
+        msg += f"by {download.extra_details['source']}\n\n"
+        msg += f"<b>┌ {download.status()}...</b>"
         if download.status() not in [MirrorStatus.STATUS_SPLITTING, MirrorStatus.STATUS_SEEDING]:
-            if download.status() != MirrorStatus.STATUS_UPLOADDDL:
-                msg += BotTheme('BAR', Bar=f"{get_progress_bar_string(download.progress())} {download.progress()}")
-                msg += BotTheme('PROCESSED',
-                                Processed=f"{download.processed_bytes()} of {download.size()}")
-            msg += BotTheme('STATUS', Status=download.status(), Url=msg_link)
-            if download.status() != MirrorStatus.STATUS_UPLOADDDL:
-                msg += BotTheme('ETA', Eta=download.eta())
-            if download.status() != MirrorStatus.STATUS_UPLOADDDL:
-                msg += BotTheme('SPEED', Speed=download.speed())
-            msg += BotTheme('ELAPSED', Elapsed=get_readable_time(time() -
-                            download.message.date.timestamp()))
-            msg += BotTheme('ENGINE', Engine=download.eng())
+            msg += f"\n<b>├ {progress_bar(download.progress())}</b> {download.progress()}"
+            msg += f"\n<b>├ </b>{download.processed_bytes()} of {download.size()}"
+            msg += f"\n<b>├ Speed</b>: {download.speed()}"
+            msg += f'\n<b>├ Estimated</b>: {download.eta()}'
             if hasattr(download, 'seeders_num'):
                 try:
-                    msg += BotTheme('SEEDERS', Seeders=download.seeders_num())
-                    msg += BotTheme('LEECHERS',
-                                    Leechers=download.leechers_num())
+                    msg += f"\n<b>├ Seeders</b>: {download.seeders_num()} | <b>Leechers</b>: {download.leechers_num()}"
                 except:
                     pass
         elif download.status() == MirrorStatus.STATUS_SEEDING:
-            msg += BotTheme('STATUS', Status=download.status(), Url=msg_link)
-            msg += BotTheme('SEED_SIZE', Size=download.size())
-            msg += BotTheme('SEED_SPEED', Speed=download.upload_speed())
-            msg += BotTheme('UPLOADED', Upload=download.uploaded_bytes())
-            msg += BotTheme('RATIO', Ratio=download.ratio())
-            msg += BotTheme('TIME', Time=download.seeding_time())
-            msg += BotTheme('SEED_ENGINE', Engine=download.eng())
+            msg += f"\n<b>├ Size</b>: {download.size()}"
+            msg += f"\n<b>├ Speed</b>: {download.upload_speed()}"
+            msg += f"\n<b>├ Uploaded</b>: {download.uploaded_bytes()}"
+            msg += f"\n<b>├ Ratio</b>: {download.ratio()}"
+            msg += f"\n<b>├ Time</b>: {download.seeding_time()}"
         else:
-            msg += BotTheme('STATUS', Status=download.status(), Url=msg_link)
-            msg += BotTheme('STATUS_SIZE', Size=download.size())
-            msg += BotTheme('NON_ENGINE', Engine=download.eng())
-
-        msg += BotTheme('USER',
-                        User=download.message.from_user.mention(style="html"))
-        msg += BotTheme('ID', Id=download.message.from_user.id)
-        msg += BotTheme('CANCEL',
-                        Cancel=f"/{BotCommands.CancelMirror}_{download.gid()}")
-
+            msg += f"\n<b>├ Size</b>: {download.size()}"
+        msg += f"\n<b>├ Elapsed</b>: {get_readable_time(time() - download.extra_details['startTime'])}"
+        msg += f"\n<b>└ </b><code>/{BotCommands.CancelMirror} {download.gid()}</code>\n\n"
     if len(msg) == 0:
         return None, None
-
-    dl_speed = 0
-
-    def convert_speed_to_bytes_per_second(spd):
-        if 'K' in spd:
-            return float(spd.split('K')[0]) * 1024
-        elif 'M' in spd:
-            return float(spd.split('M')[0]) * 1048576
-        else:
-            return 0
-
     dl_speed = 0
     up_speed = 0
     for download in download_dict.values():
-        tstatus = download.status()
-        spd = download.speed() if tstatus != MirrorStatus.STATUS_SEEDING else download.upload_speed()
-        speed_in_bytes_per_second = convert_speed_to_bytes_per_second(spd)
-        if tstatus == MirrorStatus.STATUS_DOWNLOADING:
-            dl_speed += speed_in_bytes_per_second
-        elif tstatus in [
-            MirrorStatus.STATUS_UPLOADING,
-            MirrorStatus.STATUS_SEEDING,
-        ]:
-            up_speed += speed_in_bytes_per_second
-
+            tstatus = download.status()
+            if tstatus == MirrorStatus.STATUS_DOWNLOADING:
+                spd = download.speed()
+                if 'K' in spd:
+                    dl_speed += float(spd.split('K')[0]) * 1024
+                elif 'M' in spd:
+                    dl_speed += float(spd.split('M')[0]) * 1048576
+            elif tstatus == MirrorStatus.STATUS_UPLOADING:
+                spd = download.speed()
+                if 'K' in spd:
+                    up_speed += float(spd.split('K')[0]) * 1024
+                elif 'M' in spd:
+                    up_speed += float(spd.split('M')[0]) * 1048576
+            elif tstatus == MirrorStatus.STATUS_SEEDING:
+                spd = download.upload_speed()
+                if 'K' in spd:
+                    up_speed += float(spd.split('K')[0]) * 1024
+                elif 'M' in spd:
+                    up_speed += float(spd.split('M')[0]) * 1048576
     if tasks > STATUS_LIMIT:
-        msg += BotTheme('PAGE', Page=f"{PAGE_NO}/{PAGES}")
-        msg += BotTheme('TASKS', Tasks=tasks)
         buttons = ButtonMaker()
-        buttons.ibutton(BotTheme('PREVIOUS'), "status pre")
-        buttons.ibutton(BotTheme('REFRESH'), "status ref")
-        buttons.ibutton(BotTheme('NEXT'), "status nex")
+        buttons.ibutton("Prev", "status pre")
+        buttons.ibutton(f"{PAGE_NO}/{PAGES}", "status ref")
+        buttons.ibutton("Next", "status nex")
         button = buttons.build_menu(3)
-    msg += BotTheme('FOOTER')
-    msg += BotTheme('Cpu', cpu=cpu_percent())
-    msg += BotTheme('FREE', free=get_readable_file_size(
-        disk_usage(config_dict['DOWNLOAD_DIR']).free))
-    msg += BotTheme('Ram', ram=virtual_memory().percent)
-    msg += BotTheme('uptime', uptime=get_readable_time(time() - botStartTime))
-    msg += BotTheme('DL', DL=get_readable_file_size(dl_speed))
-    msg += BotTheme('UL', UL=get_readable_file_size(up_speed))
+    msg += f"<b>• Tasks</b>: {tasks}"
+    msg += f"\n<b>• Bot uptime</b>: {currentTime}"
+    msg += f"\n<b>• Free disk space</b>: {get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free)}"
+    msg += f"\n<b>• Uploading speed</b>: {get_readable_file_size(up_speed)}/s"
+    msg += f"\n<b>• Downloading speed</b>: {get_readable_file_size(dl_speed)}/s"
     return msg, button
 
 
@@ -299,14 +258,16 @@ async def turn_page(data):
 
 
 def get_readable_time(seconds):
-    periods = [('d', 86400), ('h', 3600), ('m', 60), ('s', 1)]
+    periods = [('cosmic year', 31557600000000000), ('galactic year', 225000000000000000), ('aeon', 31536000000000000), ('epoch', 315360000000), ('millennium', 31536000000), ('century', 3153600000), ('decade', 315360000), ('year', 31536000), ('month', 2592000), ('week', 604800), ('day', 86400), ('hour', 3600), ('minute', 60), ('second', 1)]
     result = ''
     for period_name, period_seconds in periods:
         if seconds >= period_seconds:
             period_value, seconds = divmod(seconds, period_seconds)
-            result += f'{int(period_value)}{period_name}'
-    return result
-
+            plural_suffix = 's' if period_value > 1 else ''
+            result += f'{int(period_value)} {period_name}{plural_suffix} '
+            if len(result.split()) == 2:
+                break
+    return result.strip()
 
 def is_magnet(url):
     return bool(re_match(MAGNET_REGEX, url))

@@ -95,7 +95,7 @@ class style:
 
     # def get_readable_message(): ---> bot_utilis.py
     ####--------OVERALL MSG HEADER----------
-    STATUS_NAME =       '{Name}'
+    STATUS_NAME =       '{Name}\n'
 
     #####---------PROGRESSIVE STATUS-------
     BAR =               '\n┃ {Bar}'
