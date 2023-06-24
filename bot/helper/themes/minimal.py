@@ -9,7 +9,7 @@ class style:
     ST_MSG = '''<i>This bot can mirror all your links|files|torrents to Google Drive or any rclone cloud or to telegram or to ddl servers.</i>
 <b>Type {help_command} to get a list of available commands</b>'''
     ST_BOTPM = '''<i>Now, This bot will send all your files and links here. Start Using ...</i>'''
-    ST_UNAUTH = '''<i>You Are not authorized user! Deploy your own WZML-X Mirror-Leech bot</i>'''
+    ST_UNAUTH = '''<i>You Are not authorized user!</i>'''
     # ---------------------
 
     # async def stats(client, message):
@@ -28,7 +28,7 @@ class style:
 <b>CPU Frequency :</b> {cpu_freq}
 <b>P-Core(s) :</b> {p_core} | <b>V-Core(s) :</b> {v_core} ( <b>T :</b> {total_core} )
 
-<b><i>RAM ( MEMORY ) :</i></b> {ram_bar} {ram}%
+<b><i>RAM ( MEMORY ) :</i></b> {ram}%
 <b>U :</b> {ram_u} | <b>F :</b> {ram_f} | <b>T :</b> {ram_t}
 
 <b><i>SWAP MEMORY :</i></b> {swap}%
@@ -40,21 +40,21 @@ class style:
     # ---------------------
 
     # async def restart(client, message): ---> __main__.py
-    RESTARTING = '<i>Restarting...</i>'
+    RESTARTING = 'Restarting...'
     # ---------------------
 
     # async def restart_notification(): ---> __main__.py
-    RESTART_SUCCESS = '''⌬ <b><i>Restarted Successfully!</i></b>
-┠ <b>Date:</b> {date}
-┠ <b>Time:</b> {time}
-┠ <b>TimeZone:</b> {timz}
-┖ <b>Version:</b> {version}'''
-    RESTARTED = '''⌬ <b><i>Bot Restarted!</i></b>'''
+    RESTART_SUCCESS = '''Restarted Successfully!
+<b>Date:</b> {date}
+<b>Time:</b> {time}
+<b>TimeZone:</b> {timz}
+<b>Version:</b> {version}'''
+    RESTARTED = '''Bot Restarted!'''
     # ---------------------
 
     # async def ping(client, message): ---> __main__.py
     PING = '<i>Starting Ping..</i>'
-    PING_VALUE = '<b>Pong</b>\n<code>{value} ms..</code>'
+    PING_VALUE = '{value} ms'
     # ---------------------
 
     # async def __msg_to_reply(self): ---> pyrogramEngine.py
@@ -62,24 +62,24 @@ class style:
     L_LOG_START =           "➲ <b><u>Leech Started :</u></b>\n┃\n┠ <b>User :</b> {mention} ( {uid} )\n┖ <b>Source :</b> {msg_link}"
 
     # async def onUploadComplete(): ---> tasks_listener.py
-    NAME =                  '<b><i>{Name}</i></b>\n┃\n'
-    SIZE =                  '┠ <b>Size: </b>{Size}\n'
+    NAME =                  '{Name}\n\n'
+    SIZE =                  '<b>• Size: </b>{Size}\n'
 
     # ----- LEECH -------
-    L_TOTAL_FILES =         '┠ <b>Total Files: </b>{Files}\n'
-    L_CORRUPTED_FILES =     '┠ <b>Corrupted Files: </b>{Corrupt}\n'
-    L_CC =                  '┖ <b>By: </b>{Tag}\n\n'
-    PM_BOT_MSG =            '➲ <b><i>Files are Send Above</i></b>'
-    L_BOT_MSG =             '➲ <b><i>Files are Send to Bot PM (Private)</i></b>'
-    L_LL_MSG =              '➲ <b><i>Files are Send. Access via Links...</i></b>'
+    L_TOTAL_FILES =         '<b>• Total files: </b>{Files}\n'
+    L_CORRUPTED_FILES =     '<b>• Corrupted files: </b>{Corrupt}\n'
+    L_CC =                  '<b>• Leeched by: </b>{Tag}\n\n'
+    PM_BOT_MSG =            '<b>Files are send above</b>'
+    L_BOT_MSG =             '<b>Files has sent to your inbox</b>'
+    L_LL_MSG =              '<b>Files are sent. Access via links...</b>'
     
     # ----- MIRROR -------
-    M_TYPE =                '┠ <b>Type: </b>{Mimetype}\n'
-    M_SUBFOLD =             '┠ <b>SubFolders: </b>{Folder}\n'
-    TOTAL_FILES =           '┠ <b>Files: </b>{Files}\n'
-    RCPATH =                '┠ <b>Path: </b><code>{RCpath}</code>\n'
-    M_CC =                  '┖ <b>By: </b>{Tag}\n\n'
-    M_BOT_MSG =             '➲ <b><i>Links are Send to Bot PM (Private)</i></b>'
+    M_TYPE =                '<b>• Type: </b>{Mimetype}\n'
+    M_SUBFOLD =             '<b>• SubFolders: </b>{Folder}\n'
+    TOTAL_FILES =           '<b>• Files: </b>{Files}\n'
+    RCPATH =                '<b>• Path: </b><code>{RCpath}</code>\n'
+    M_CC =                  '<b>• Uploaded by: {Tag}\n\n'
+    M_BOT_MSG =             '<b>Links has sent to your inbox</b>'
     
     # ----- BUTTONS -------
     CLOUD_LINK =      'Cloud Link'
@@ -95,7 +95,7 @@ class style:
 
     # def get_readable_message(): ---> bot_utilis.py
     ####--------OVERALL MSG HEADER----------
-    STATUS_NAME =       '<b><i>{Name}</i></b>'
+    STATUS_NAME =       '{Name}'
 
     #####---------PROGRESSIVE STATUS-------
     BAR =               '\n┃ {Bar}'
@@ -148,12 +148,12 @@ class style:
 
     # async def countNode(_, message): ----> gd_count.py
     COUNT_MSG = '<b>Counting:</b> <code>{LINK}</code>'
-    COUNT_NAME = '<b><i>{COUNT_NAME}</i></b>\n'
-    COUNT_SIZE = '┠ <b>Size: </b>{COUNT_SIZE}\n'
-    COUNT_TYPE = '┠ <b>Type: </b>{COUNT_TYPE}\n'
-    COUNT_SUB =  '┠ <b>SubFolders: </b>{COUNT_SUB}\n'
-    COUNT_FILE = '┠ <b>Files: </b>{COUNT_FILE}\n'
-    COUNT_CC =   '┖ <b>By: </b>{COUNT_CC}\n'
+    COUNT_NAME = '{COUNT_NAME}\n'
+    COUNT_SIZE = '<b>• Size: </b>{COUNT_SIZE}\n'
+    COUNT_TYPE = '<b>• Type: </b>{COUNT_TYPE}\n'
+    COUNT_SUB =  '<b>• SubFolders: </b>{COUNT_SUB}\n'
+    COUNT_FILE = '<b>• Files: </b>{COUNT_FILE}\n'
+    COUNT_CC =   '<b>• Counted by: </b>{COUNT_CC}\n'
     # ---------------------
 
     # LIST ---> gd_list.py
@@ -165,44 +165,43 @@ class style:
     # async def mirror_status(_, message): ----> status.py
     NO_ACTIVE_DL = '''<code>No Active Downloads!</code>
     
-⌬ <b><i>Bot Stats</i></b>
-┠ <b>CPU:</b> {cpu}% | <b>FREE:</b> {free}
-┖ <b>RAM:</b> {ram} | <b>UPTIME:</b> {uptime}
+<b>• CPU:</b> {cpu}% | <b>FREE:</b> {free}
+<b>• RAM:</b> {ram} | <b>UPTIME:</b> {uptime}
     '''
     # ---------------------
 
     # USER Setting --> user_setting.py 
     USER_SETTING = '''<b><u>User Settings :</u></b>
         
-┎<b> Name :</b> {NAME} ( <code>{ID}</code> )
-┠<b> Username :</b> {USERNAME}
-┠<b> Telegram DC :</b> {DC}
-┖<b> Language :</b> {LANG}'''
+<b>• Name :</b> {NAME} ( <code>{ID}</code> )
+<b>• Username :</b> {USERNAME}
+<b>• Telegram DC :</b> {DC}
+<b>• Language :</b> {LANG}'''
 
     UNIVERSAL = '''<b><u>Universal Settings : {NAME}</u></b>
 
-┎<b> YT-DLP Options :</b> <b><code>{YT}</code></b>
-┠<b> Daily Tasks :</b> <code>{DT}</code> per day
-┠<b> Last Bot Used :</b> <code>{LAST_USED}</code>
-┠<b> MediaInfo Mode :</b> <code>{MEDIAINFO}</code>
-┖<b> User Bot PM :</b> <code>{BOT_PM}</code>'''
+<b>• YT-DLP Options :</b> <b><code>{YT}</code></b>
+<b>• Daily Tasks :</b> <code>{DT}</code> per day
+<b>• Last Bot Used :</b> <code>{LAST_USED}</code>
+<b>• MediaInfo Mode :</b> <code>{MEDIAINFO}</code>
+<b>• User Bot PM :</b> <code>{BOT_PM}</code>'''
 
     MIRROR = '''<b><u>Mirror Settings : {NAME}</u></b>
 
-┎<b> RClone Config :</b> <i>{RCLONE}</i>
-┠<b> DDL Server(s) :</b> <i>{DDL_SERVER}</i>
-┖<b> Daily Mirror :</b> <code>{DM}</code> per day'''
+<b>• RClone Config :</b> <i>{RCLONE}</i>
+<b>• DDL Server(s) :</b> <i>{DDL_SERVER}</i>
+<b>• Daily Mirror :</b> <code>{DM}</code> per day'''
 
     LEECH = '''<b><u>Leech Settings for {NAME}</u></b>
 
-┎<b> Daily Leech : </b><code>{DL}</code> per day
-┠<b> Leech Type :</b> <i>{LTYPE}</i>
-┠<b> Custom Thumbnail :</b> <i>{THUMB}</i>
-┠<b> Leech Split Size :</b> <code>{SPLIT_SIZE}</code>
-┠<b> Equal Splits :</b> <i>{EQUAL_SPLIT}</i>
-┠<b> Media Group :</b> <i>{MEDIA_GROUP}</i>
-┠<b> Leech Caption :</b> <code>{LCAPTION}</code>
-┠<b> Leech Prefix :</b> <code>{LPREFIX}</code>
-┠<b> Leech Suffix :</b> <code>{LSUFFIX}</code>
-┠<b> Leech Dump :</b> <code>{LDUMP}</code>
-┖<b> Leech Remname :</b> <code>{LREMNAME}</code>'''
+<b>• Daily Leech : </b><code>{DL}</code> per day
+<b>• Leech Type :</b> <i>{LTYPE}</i>
+<b>• Custom Thumbnail :</b> <i>{THUMB}</i>
+<b>• Leech Split Size :</b> <code>{SPLIT_SIZE}</code>
+<b>• Equal Splits :</b> <i>{EQUAL_SPLIT}</i>
+<b>• Media Group :</b> <i>{MEDIA_GROUP}</i>
+<b>• Leech Caption :</b> <code>{LCAPTION}</code>
+<b>• Leech Prefix :</b> <code>{LPREFIX}</code>
+<b>• Leech Suffix :</b> <code>{LSUFFIX}</code>
+<b>• Leech Dump :</b> <code>{LDUMP}</code>
+<b>• Leech Remname :</b> <code>{LREMNAME}</code>'''
