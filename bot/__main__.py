@@ -105,9 +105,9 @@ async def start(client, message):
         start_string = BotTheme('ST_MSG', help_command=f"/{BotCommands.HelpCommand}")
         await sendMessage(message, start_string, reply_markup, photo='IMAGES')
     elif config_dict['BOT_PM']:
-        await sendMessage(message, BotTheme('ST_BOTPM'), reply_markup, photo='IMAGES')
+        await sendMessage(message, BotTheme('ST_BOTPM'), photo='IMAGES')
     else:
-        await sendMessage(message, BotTheme('ST_UNAUTH'), reply_markup, photo='IMAGES')
+        await sendMessage(message, BotTheme('ST_UNAUTH'), photo='IMAGES')
 
 async def token_callback(_, query):
     user_id = query.from_user.id
