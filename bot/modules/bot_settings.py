@@ -254,6 +254,9 @@ async def load_config():
     IS_TEAM_DRIVE = environ.get('IS_TEAM_DRIVE', '')
     IS_TEAM_DRIVE = IS_TEAM_DRIVE.lower() == 'true'
 
+    SHOW_LIMITS = environ.get('SHOW_LIMITS', '')
+    SHOW_LIMITS = SHOW_LIMITS.lower() == 'true'
+    
     USE_SERVICE_ACCOUNTS = environ.get('USE_SERVICE_ACCOUNTS', '')
     USE_SERVICE_ACCOUNTS = USE_SERVICE_ACCOUNTS.lower() == 'true'
 
@@ -573,6 +576,7 @@ async def load_config():
                         'SEARCH_LIMIT': SEARCH_LIMIT,
                         'SEARCH_PLUGINS': SEARCH_PLUGINS,
                         'SET_COMMANDS': SET_COMMANDS,
+                        'SHOW_LIMITS': SHOW_LIMITS,
                         'SHOW_MEDIAINFO': SHOW_MEDIAINFO,
                         'STATUS_LIMIT': STATUS_LIMIT,
                         'STATUS_UPDATE_INTERVAL': STATUS_UPDATE_INTERVAL,

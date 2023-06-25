@@ -162,6 +162,9 @@ async def sendRss(text):
         LOGGER.error(str(e))
         return str(e)
 
+async def one_minute_del(message):
+    await sleep(60)
+    await deleteMessage(message)
 
 async def deleteMessage(message):
     try:
