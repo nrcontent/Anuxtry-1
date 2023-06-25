@@ -444,11 +444,13 @@ async def getdailytasks(user_id, increase_task=False, upleech=0, upmirror=0, che
 
 def checking_access(user_id, button=None):
     token_timeout = config_dict['TOKEN_TIMEOUT']
-    if not config_dict['TOKEN_TIMEOUT']:
+    if not config_dict['TOKEN_TIMEOUT'] or bool(user_id == OWNER_ID or user_id in user_data and user_data[user_id].get('is_sudo')):
         return None, button
     user_data.setdefault(user_id, {})
     data = user_data[user_id]
     expire = data.get('time')
+    if config_dict['LOGIN_PASS'] is not None and data.get('token', '') == config_dict['LOGIN_PASS']:
+        return None, button
     isExpired = (expire is None or expire is not None and (time() - expire) > config_dict['TOKEN_TIMEOUT'])
     if isExpired:
         token = data['token'] if expire is None and 'token' in data else str(uuid4())
@@ -459,9 +461,11 @@ def checking_access(user_id, button=None):
         time_str = format_validity_time(token_timeout)
         if button is None:
             button = ButtonMaker()
-        button.ubutton('Collect token', short_url(f'https://telegram.me/{bot_name}?start={token}'))
+        encrypt_url = b64encode(f"{token}&&{user_id}".encode()).decode()
+        button.ubutton('Collect token', short_url(f'https://t.me/{bot_name}?start={encrypt_url}'))
         return f'Your token has expired, please collect a new token.\n<b>It will expire after {time_str}</b>!', button
     return None, button
+
 
 def format_validity_time(seconds):
     periods = [('cosmic year', 31557600000000000), ('galactic year', 225000000000000000), ('aeon', 31536000000000000), ('epoch', 315360000000), ('millennium', 31536000000), ('century', 3153600000), ('decade', 315360000), ('year', 31536000), ('month', 2592000), ('week', 604800), ('day', 86400), ('hour', 3600), ('minute', 60), ('second', 1)]
