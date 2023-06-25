@@ -33,6 +33,7 @@ from .helper.themes import BotTheme
 from .modules import authorize, clone, gd_count, gd_delete, gd_list, cancel_mirror, mirror_leech, status, torrent_search, torrent_select, ytdlp, \
                      rss, shell, eval, users_settings, bot_settings, speedtest, save_msg, images, imdb, anilist, mediainfo, mydramalist
 
+@new_thread
 async def stats(_, message):
     total, used, free, disk = disk_usage('/')
     memory = virtual_memory()
