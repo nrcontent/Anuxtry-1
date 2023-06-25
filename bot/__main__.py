@@ -103,7 +103,7 @@ async def start(client, message):
         return await sendMessage(message, msg, reply_markup)
     elif await CustomFilters.authorized(client, message):
         start_string = BotTheme('ST_MSG', help_command=f"/{BotCommands.HelpCommand}")
-        await sendMessage(message, start_string, reply_markup, photo='IMAGES')
+        await sendMessage(message, start_string, photo='IMAGES')
     elif config_dict['BOT_PM']:
         await sendMessage(message, BotTheme('ST_BOTPM'), photo='IMAGES')
     else:
